@@ -17,7 +17,7 @@ func main() {
 	statement1.Exec()
 
 	statement2, _ := database.Prepare("INSERT INTO people (email, password) VALUES (? , ?)")
-	statement2.Exec("email4", "password4")
+	statement2.Exec("email4", "password4") //Placeholder data. Get input from login.html
 
 	rows, _ := database.Query("SELECT id, email, password FROM people")
 
