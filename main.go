@@ -21,9 +21,11 @@ func main() {
 
 	rows, _ := database.Query("SELECT id, email, password FROM people")
 
-	var id int
-	var email string
-	var password string
+	var (
+		id       int
+		email    string
+		password string
+	)
 
 	for rows.Next() {
 		rows.Scan(&id, &email, &password)
