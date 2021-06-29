@@ -71,20 +71,22 @@ func registerpage(w http.ResponseWriter, r *http.Request) {
 
 	defer database.Close()
 
-	stmt1, err1 := database.Exec("INSERT INTO users (email, password) VALUES (?, ?)", formemail1, formpsw1)
-	if err != nil {
-		log.Fatal(err)
+	stmt1, err1 := database.Prepare("INSERT INTO users (email, password) VALUES (?, ?)")
+	stmt1.Exec(formemail1, formpsw1)
+	if err1 != nil {
+		log.Fatal(err1)
 	}
 
 	var email string
 
-	err1 = stmt1.QueryRow(formemail1).Scan(&email)
-	if err != nil {
+	err1 = stmt1.QueryRow(formemail1).Scan(email)
+	if err1 != nil {
 		log.Fatal(err1)
 	}
 
 	if email == formemail1 {
 		fmt.Println("This email is already in use.")
+		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
 		fmt.Println("Successfully created a new account.")
 	}
