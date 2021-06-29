@@ -14,18 +14,15 @@ var tpl *template.Template
 
 func main() {
 
-	http.HandleFunc("/", login)
 	http.HandleFunc("/login", loginpage)
 	http.HandleFunc("/register", registerpage)
 	http.ListenAndServe(":8000", nil)
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
+func loginpage(w http.ResponseWriter, r *http.Request) {
+
 	tpl = template.Must(template.ParseGlob("./login.html"))
 	tpl.ExecuteTemplate(w, "login.html", nil)
-}
-
-func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	formemail := r.FormValue("email")
 	formpsw := r.FormValue("psw")
