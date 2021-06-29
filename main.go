@@ -15,7 +15,7 @@ var tpl *template.Template
 func main() {
 
 	http.HandleFunc("/", login)
-	http.HandleFunc("/process", processor)
+	http.HandleFunc("/login", loginpage)
 	http.ListenAndServe(":8000", nil)
 }
 
@@ -24,7 +24,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "login.html", nil)
 }
 
-func processor(w http.ResponseWriter, r *http.Request) {
+func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	formemail := r.FormValue("email")
 	formpsw := r.FormValue("psw")
