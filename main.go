@@ -10,19 +10,27 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tpl *template.Template
+var (
+	tpl  *template.Template
+	tpl1 *template.Template
+)
 
 func main() {
 
+	http.HandleFunc("/", login)
 	http.HandleFunc("/login", loginpage)
 	http.HandleFunc("/register", registerpage)
 	http.ListenAndServe(":8000", nil)
 }
 
-func loginpage(w http.ResponseWriter, r *http.Request) {
-
+func login(w http.ResponseWriter, r *http.Request) {
 	tpl = template.Must(template.ParseGlob("./login.html"))
 	tpl.ExecuteTemplate(w, "login.html", nil)
+	tpl1 = template.Must(template.ParseGlob("./register.html"))
+	tpl1.ExecuteTemplate(w, "register.html", nil)
+}
+
+func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	formemail := r.FormValue("email")
 	formpsw := r.FormValue("psw")
@@ -57,9 +65,6 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 }
 
 func registerpage(w http.ResponseWriter, r *http.Request) {
-
-	tpl = template.Must(template.ParseGlob("./register.html"))
-	tpl.ExecuteTemplate(w, "register.html", nil)
 
 	formemail1 := r.FormValue("email")
 	formpsw1 := r.FormValue("psw")
