@@ -1,8 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -11,32 +13,44 @@ import (
 var tpl *template.Template
 
 func main() {
-	fmt.Println("Hello World!!")
-
-	// database, _ := sql.Open("sqlite3", "./mydata.db")
-
-	// statement1, _ := database.Prepare("CREATE TABLE IF NOT EXISTS people (id INTEGER PRIMARY KEY, email TEXT, password TEXT)")
-	// statement1.Exec()
-
-	// statement2, _ := database.Prepare("INSERT INTO people (email, password) VALUES (? , ?)")
-	// statement2.Exec("email4", "password4") //Placeholder data. Get input from login.html
-
-	// rows, _ := database.Query("SELECT id, email, password FROM people")
-
-	// var (
-	// 	id       int
-	// 	email    string
-	// 	password string
-	// )
 
 	http.HandleFunc("/", login)
+	http.HandleFunc("/process", processor)
 	http.ListenAndServe(":8000", nil)
 }
 
-func init() {
+func login(w http.ResponseWriter, r *http.Request) {
 	tpl = template.Must(template.ParseGlob("./login.html"))
+	tpl.ExecuteTemplate(w, "login.html", nil)
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
-	tpl.ExecuteTemplate(w, "login.html", nil)
+func processor(w http.ResponseWriter, r *http.Request) {
+
+	formemail := r.FormValue("email")
+	formpsw := r.FormValue("psw")
+
+	database, err := sql.Open("sqlite3", "./data.db")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer database.Close()
+
+	stmt, err := database.Prepare("SELECT password FROM users WHERE email=?;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	var password string
+	err = stmt.QueryRow(formemail).Scan(&password)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if password == formpsw {
+		fmt.Println("YAY")
+	} else {
+		fmt.Println("KNOPE")
+	}
+
 }
