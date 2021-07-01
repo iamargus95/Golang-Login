@@ -70,12 +70,9 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 
 func registerpage(w http.ResponseWriter, r *http.Request) {
 
-<<<<<<< Updated upstream
-=======
 	tpl1 = template.Must(template.ParseGlob("./register.html"))
 	tpl1.ExecuteTemplate(w, "register.html", nil)
 
->>>>>>> Stashed changes
 	formemail1 := r.FormValue("email")
 	formpsw1 := r.FormValue("psw")
 
