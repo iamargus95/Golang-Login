@@ -10,13 +10,24 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tpl *template.Template
+var (
+	tpl  *template.Template
+	tpl1 *template.Template
+)
 
 func main() {
 
+	fmt.Println("Starting listener on http://localhost:8080")
+	http.HandleFunc("/", website)
 	http.HandleFunc("/login", loginpage)
 	http.HandleFunc("/register", registerpage)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":8080", nil)
+
+}
+
+func website(w http.ResponseWriter, r *http.Request) {
+	tpl = template.Must(template.ParseGlob("./website.html"))
+	tpl.ExecuteTemplate(w, "website.html", nil)
 }
 
 func loginpage(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +70,12 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 
 func registerpage(w http.ResponseWriter, r *http.Request) {
 
+<<<<<<< Updated upstream
+=======
+	tpl1 = template.Must(template.ParseGlob("./register.html"))
+	tpl1.ExecuteTemplate(w, "register.html", nil)
+
+>>>>>>> Stashed changes
 	formemail1 := r.FormValue("email")
 	formpsw1 := r.FormValue("psw")
 
