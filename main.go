@@ -42,7 +42,6 @@ func loginh(w http.ResponseWriter, r *http.Request) {
 
 	formemail := r.FormValue("email")
 	formpsw := r.FormValue("psw")
-	// onclickregister := r.FormValue("")
 
 	database, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
