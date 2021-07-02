@@ -109,7 +109,7 @@ func registerh(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("This email is already in use.")
 		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
-		tpl = template.Must(template.ParseGlob("./loginh.html"))
-		tpl.ExecuteTemplate(w, "loginh.html", nil)
+		tpl = template.Must(template.ParseGlob("./registerh.html"))
+		tpl.ExecuteTemplate(w, "registerh.html", nil)
 	}
 }
