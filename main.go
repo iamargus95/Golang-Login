@@ -21,6 +21,8 @@ func main() {
 	http.HandleFunc("/", website)
 	http.HandleFunc("/login", loginpage)
 	http.HandleFunc("/register", registerpage)
+	http.HandleFunc("/loginh", loginh)
+	http.HandleFunc("/registerh", registerh)
 	http.ListenAndServe(":8080", nil)
 
 }
@@ -34,6 +36,9 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	tpl = template.Must(template.ParseGlob("./login.html"))
 	tpl.ExecuteTemplate(w, "login.html", nil)
+}
+
+func loginh(w http.ResponseWriter, r *http.Request) {
 
 	formemail := r.FormValue("email")
 	formpsw := r.FormValue("psw")
@@ -61,9 +66,11 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if password == formpsw {
-		fmt.Println("YAY")
+		tpl = template.Must(template.ParseGlob("./loginh.html"))
+		tpl.ExecuteTemplate(w, "loginh.html", nil)
 	} else {
-		fmt.Println("KNOPE")
+		tpl = template.Must(template.ParseGlob("./website.html"))
+		tpl.ExecuteTemplate(w, "website.html", nil)
 	}
 
 }
@@ -72,6 +79,9 @@ func registerpage(w http.ResponseWriter, r *http.Request) {
 
 	tpl1 = template.Must(template.ParseGlob("./register.html"))
 	tpl1.ExecuteTemplate(w, "register.html", nil)
+}
+
+func registerh(w http.ResponseWriter, r *http.Request) {
 
 	formemail1 := r.FormValue("email")
 	formpsw1 := r.FormValue("psw")
@@ -100,6 +110,7 @@ func registerpage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("This email is already in use.")
 		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
-		fmt.Println("Successfully created a new account.")
+		tpl = template.Must(template.ParseGlob("./loginh.html"))
+		tpl.ExecuteTemplate(w, "loginh.html", nil)
 	}
 }
