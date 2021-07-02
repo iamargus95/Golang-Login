@@ -24,7 +24,6 @@ func main() {
 	http.HandleFunc("/loginh", loginh)
 	http.HandleFunc("/registerh", registerh)
 	http.ListenAndServe(":8080", nil)
-
 }
 
 func website(w http.ResponseWriter, r *http.Request) {
@@ -65,11 +64,9 @@ func loginh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if password == formpsw {
-		tpl = template.Must(template.ParseGlob("./loginh.html"))
-		tpl.ExecuteTemplate(w, "loginh.html", nil)
+		fmt.Println("Login Successful.")
 	} else {
-		tpl = template.Must(template.ParseGlob("./website.html"))
-		tpl.ExecuteTemplate(w, "website.html", nil)
+		fmt.Println("Login Failed.")
 	}
 
 }
@@ -90,8 +87,6 @@ func registerh(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	defer database.Close()
-
 	stmt1, err1 := database.Prepare("INSERT INTO users (email, password) VALUES (?, ?)")
 	stmt1.Exec(formemail1, formpsw1)
 	if err1 != nil {
@@ -109,7 +104,9 @@ func registerh(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("This email is already in use.")
 		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
-		tpl = template.Must(template.ParseGlob("./registerh.html"))
-		tpl.ExecuteTemplate(w, "registerh.html", nil)
+		fmt.Println("Registeration Successful")
 	}
+
+	defer database.Close()
+
 }
