@@ -10,22 +10,37 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tpl *template.Template
+var (
+	tpl  *template.Template
+	tpl1 *template.Template
+)
 
 func main() {
 
+	fmt.Println("Starting listener on http://localhost:8080")
+	http.HandleFunc("/", website)
 	http.HandleFunc("/login", loginpage)
 	http.HandleFunc("/register", registerpage)
-	http.ListenAndServe(":8000", nil)
+	http.HandleFunc("/loginh", loginh)
+	http.HandleFunc("/registerh", registerh)
+	http.ListenAndServe(":8080", nil)
+}
+
+func website(w http.ResponseWriter, r *http.Request) {
+	tpl = template.Must(template.ParseGlob("./website.html"))
+	tpl.ExecuteTemplate(w, "website.html", nil)
 }
 
 func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	tpl = template.Must(template.ParseGlob("./login.html"))
 	tpl.ExecuteTemplate(w, "login.html", nil)
+}
 
-	formemail := r.FormValue("email")
-	formpsw := r.FormValue("psw")
+func loginh(w http.ResponseWriter, r *http.Request) {
+
+	formEmail := r.FormValue("email")
+	formPsw := r.FormValue("psw")
 
 	database, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
@@ -43,51 +58,55 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 
 	var password string
 
-	err = stmt.QueryRow(formemail).Scan(&password)
+	err = stmt.QueryRow(formEmail).Scan(&password)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if password == formpsw {
-		fmt.Println("YAY")
+	if password == formPsw {
+		fmt.Println("Login Successful.")
 	} else {
-		fmt.Println("KNOPE")
+		fmt.Println("Login Failed.")
 	}
 
 }
 
 func registerpage(w http.ResponseWriter, r *http.Request) {
 
-	tpl = template.Must(template.ParseGlob("./register.html"))
-	tpl.ExecuteTemplate(w, "register.html", nil)
+	tpl1 = template.Must(template.ParseGlob("./register.html"))
+	tpl1.ExecuteTemplate(w, "register.html", nil)
+}
 
-	formemail1 := r.FormValue("email")
-	formpsw1 := r.FormValue("psw")
+func registerh(w http.ResponseWriter, r *http.Request) {
+
+	formEmail1 := r.FormValue("email")
+	formPsw1 := r.FormValue("psw")
 
 	database, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	defer database.Close()
-
 	stmt1, err1 := database.Prepare("INSERT INTO users (email, password) VALUES (?, ?)")
-	stmt1.Exec(formemail1, formpsw1)
+	stmt1.Exec(formEmail1, formPsw1)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 
 	var email string
 
-	err1 = stmt1.QueryRow(formemail1).Scan(email)
+	err1 = stmt1.QueryRow(formEmail1).Scan(email)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 
-	if email == formemail1 {
+	if email == formEmail1 {
 		fmt.Println("This email is already in use.")
 		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
-		fmt.Println("Successfully created a new account.")
+		fmt.Println("Registeration Successful")
 	}
+
+	defer database.Close()
+
 }
