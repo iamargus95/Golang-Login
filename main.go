@@ -39,8 +39,8 @@ func loginpage(w http.ResponseWriter, r *http.Request) {
 
 func loginh(w http.ResponseWriter, r *http.Request) {
 
-	formemail := r.FormValue("email")
-	formpsw := r.FormValue("psw")
+	formEmail := r.FormValue("email")
+	formPsw := r.FormValue("psw")
 
 	database, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
@@ -58,12 +58,12 @@ func loginh(w http.ResponseWriter, r *http.Request) {
 
 	var password string
 
-	err = stmt.QueryRow(formemail).Scan(&password)
+	err = stmt.QueryRow(formEmail).Scan(&password)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if password == formpsw {
+	if password == formPsw {
 		fmt.Println("Login Successful.")
 	} else {
 		fmt.Println("Login Failed.")
@@ -79,8 +79,8 @@ func registerpage(w http.ResponseWriter, r *http.Request) {
 
 func registerh(w http.ResponseWriter, r *http.Request) {
 
-	formemail1 := r.FormValue("email")
-	formpsw1 := r.FormValue("psw")
+	formEmail1 := r.FormValue("email")
+	formPsw1 := r.FormValue("psw")
 
 	database, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
@@ -88,19 +88,19 @@ func registerh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	stmt1, err1 := database.Prepare("INSERT INTO users (email, password) VALUES (?, ?)")
-	stmt1.Exec(formemail1, formpsw1)
+	stmt1.Exec(formEmail1, formPsw1)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 
 	var email string
 
-	err1 = stmt1.QueryRow(formemail1).Scan(email)
+	err1 = stmt1.QueryRow(formEmail1).Scan(email)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 
-	if email == formemail1 {
+	if email == formEmail1 {
 		fmt.Println("This email is already in use.")
 		stmt1.Query("DELETE FROM users WHERE id = (SELECT MAX(id) FROM users")
 	} else {
