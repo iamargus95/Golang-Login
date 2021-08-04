@@ -8,7 +8,6 @@ import (
 
 var (
 	N int //Nunber of people in the Josephus Problem.
-	L int //Remainder after the biggest power of 2 is subtracted from n.
 )
 
 func main() {
