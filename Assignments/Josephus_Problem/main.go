@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	N int //Nunber of people in the Josephus Problem.
+	N int //Nunber of soldiers in the Josephus Problem.
 )
 
 func main() {
@@ -15,38 +15,38 @@ func main() {
 	fmt.Printf("\nEnter the number of people you want for the josephus problem: ")
 
 	fmt.Scanln(&N)
-	DecimalN := int64(N)
+	decimalN := int64(N)
 
-	BinaryS := strconv.FormatInt(DecimalN, 2)
+	binarySoldier := strconv.FormatInt(decimalN, 2)
 
-	BinaryS_array := strings.Split(BinaryS, "")
+	binarySoldierArray := strings.Split(binarySoldier, "")
 
-	first_element, _ := strconv.Atoi(BinaryS_array[0])
-	To_be_moved := []int{first_element}
+	firstElement, _ := strconv.Atoi(binarySoldierArray[0])
+	toBeMoved := []int{firstElement}
 
-	BinaryN_array := []int{}
-	for _, i := range BinaryS_array {
+	mutatedBinarySoldierArray := []int{}
+	for _, i := range binarySoldierArray {
 		j, err := strconv.Atoi(i)
 		if err != nil {
 			panic(err)
 		}
 
-		BinaryN_array = append(BinaryN_array, j)
+		mutatedBinarySoldierArray = append(mutatedBinarySoldierArray, j)
 	}
 
-	len := len(BinaryN_array)
+	len := len(mutatedBinarySoldierArray)
 
-	Rest_of_the_array := BinaryN_array[1:len]
-	Wb := append(Rest_of_the_array, To_be_moved...)
+	restOfTheArray := mutatedBinarySoldierArray[1:len]
+	survivorSoldier := append(restOfTheArray, toBeMoved...)
 
-	Wb_string := []string{}
-	for _, i := range Wb {
+	survivorSoldierString := []string{}
+	for _, i := range survivorSoldier {
 		j := strconv.Itoa(i)
-		Wb_string = append(Wb_string, j)
+		survivorSoldierString = append(survivorSoldierString, j)
 	}
 
-	Wb_final := strings.Join(Wb_string, "")
+	survivorFinal := strings.Join(survivorSoldierString, "")
 
-	Wb_final_Decimal, _ := strconv.ParseInt(Wb_final, 2, 64)
-	fmt.Printf("\n\nThe position of the last surviving person is : %d\n\n", Wb_final_Decimal)
+	survivorFinalInt, _ := strconv.ParseInt(survivorFinal, 2, 64)
+	fmt.Printf("\n\nThe position of the last surviving person is : %d\n\n", survivorFinalInt)
 }
