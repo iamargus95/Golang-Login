@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	N int //Nunber of soldiers in the Josephus Problem.
+	N        int //Nunber of soldiers in the Josephus Problem.
+	decimalN int64
 )
 
 func main() {
@@ -15,7 +16,12 @@ func main() {
 	fmt.Printf("\nEnter the number of people you want for the josephus problem: ")
 
 	fmt.Scanln(&N)
-	decimalN := int64(N)
+	decimalN = int64(N)
+
+	josephusSimulation(int64(decimalN))
+}
+
+func josephusSimulation(decimalN int64) {
 
 	binarySoldier := strconv.FormatInt(decimalN, 2)
 
