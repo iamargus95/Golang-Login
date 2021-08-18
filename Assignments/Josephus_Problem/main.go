@@ -16,7 +16,7 @@ func main() {
 	josephusSimulation(noOfSoldiers)
 }
 
-func josephusSimulation(noOfSoldiers int64) {
+func josephusSimulation(noOfSoldiers int64) int64 {
 
 	binarySoldier := strconv.FormatInt(noOfSoldiers, 2)
 	fmt.Println(binarySoldier)
@@ -50,4 +50,6 @@ func josephusSimulation(noOfSoldiers int64) {
 
 	survivorFinalInt, _ := strconv.ParseInt(survivorFinal, 2, 64)
 	fmt.Printf("\n\nThe position of the last surviving person is : %d\n\n", survivorFinalInt)
+
+	return (survivorFinalInt)
 }
