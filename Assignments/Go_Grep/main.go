@@ -5,27 +5,47 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
+	"path/filepath"
+	"strings"
 )
 
-func handleLine(line string) {
-	matched, err := regexp.MatchString(os.Args[1], line)
+var search = ""
+var count = 0
 
+func check(err error) {
 	if err != nil {
-		log.Fatal(err)
-	} else if matched {
-		fmt.Println(line)
+		log.Println("Error: ", err)
 	}
 }
 
-func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-
+func examine(path string, f os.FileInfo, err error) error {
+	file, err1 := os.Open(path)
+	check(err1)
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		handleLine(scanner.Text())
+		if strings.Contains(scanner.Text(), search) {
+			fmt.Println(path)
+			count += 1
+		}
+	}
+	return nil
+}
+
+func main() {
+	fmt.Println()
+	if len(os.Args) <= 2 {
+		fmt.Println("You must enter both parameters.")
+		fmt.Println("Ex. go run main.go <PATH> \"pattern match\"")
+		os.Exit(1)
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	dir := os.Args[1]
+	search = os.Args[2]
+	fmt.Println("Results:\n========")
+	err := filepath.Walk(dir, examine)
+	check(err)
+	if count == 0 {
+		fmt.Println("No matches found.")
 	}
 }
