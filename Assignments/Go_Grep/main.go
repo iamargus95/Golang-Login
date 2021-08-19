@@ -32,6 +32,27 @@ func examine(path string, f os.FileInfo, err error) error {
 	return nil
 }
 
+type option struct {
+	filename, caseInsensitive, lineNumber, wholeLine bool
+}
+
+func getOptions(flags []string) option {
+	o := option{}
+	for _, f := range flags {
+		switch f {
+		case "-i":
+			o.caseInsensitive = true
+		case "-n":
+			o.lineNumber = true
+		case "-l":
+			o.filename = true
+		case "-x":
+			o.wholeLine = true
+		}
+	}
+	return o
+}
+
 func main() {
 	fmt.Println()
 	if len(os.Args) <= 2 {
