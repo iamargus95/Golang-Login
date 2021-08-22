@@ -15,7 +15,7 @@ var (
 
 func main() {
 	fmt.Println("Starting listener on http://localhost:8080")
-	http.HandleFunc("/", userName)
+	http.HandleFunc("/", getUserName)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -54,7 +54,7 @@ type Userinfo struct {
 	Updated_at          string
 }
 
-func userName(w http.ResponseWriter, r *http.Request) {
+func getUserName(w http.ResponseWriter, r *http.Request) {
 
 	tpl = template.Must(template.ParseGlob("./index.html"))
 	tpl.ExecuteTemplate(w, "index.html", nil)
@@ -85,5 +85,5 @@ func userName(w http.ResponseWriter, r *http.Request) {
 	var users Userinfo
 	json.Unmarshal([]byte(body), &users)
 	// fmt.Println(users)
-	fmt.Printf("Name: %s\nLogin: %s\nURL: %s\nBio: %s\nPublic Repositories: %d\nFollowers: %d\nFollowing: %d\n", users.Name, users.Login, users.Url, users.Bio, users.Public_repos, users.Followers, users.Following)
+	fmt.Printf("Name: %s\n\nLogin: %s\n\nURL: %s\n\nBio: %s\nPublic Repositories: %d\n\nFollowers: %d\n\nFollowing: %d\n\n", users.Name, users.Login, users.Url, users.Bio, users.Public_repos, users.Followers, users.Following)
 }
