@@ -49,7 +49,7 @@ type Userinfo struct {
 }
 
 func main() {
-	fmt.Println("Starting listener on http://localhost:8080")
+	fmt.Println("\nStarting listener on http://localhost:8080")
 	http.HandleFunc("/", getInput)
 	http.ListenAndServe(":8080", nil)
 }
@@ -87,5 +87,34 @@ func getInput(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(users)
 	if users.Name != "" {
 		fmt.Printf("\nName: %s\n\nLogin: %s\n\nBio: %s\n\nPublic Repositories: %d\n\nFollowers: %d\n\nFollowing: %d\n\n", users.Name, users.Login, users.Bio, users.Public_repos, users.Followers, users.Following)
+		getRepos()
 	}
+}
+
+func getRepos() {
+
+	url := "http://api.github.com/users/" + formUsername + "/repos"
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(string(body))
+
 }
