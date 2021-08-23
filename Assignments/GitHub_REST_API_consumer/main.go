@@ -13,12 +13,6 @@ var (
 	formUsername string
 )
 
-func main() {
-	fmt.Println("Starting listener on http://localhost:8080")
-	http.HandleFunc("/", getUserName)
-	http.ListenAndServe(":8080", nil)
-}
-
 type Userinfo struct {
 	Login               string
 	Id                  int
@@ -54,7 +48,13 @@ type Userinfo struct {
 	Updated_at          string
 }
 
-func getUserName(w http.ResponseWriter, r *http.Request) {
+func main() {
+	fmt.Println("Starting listener on http://localhost:8080")
+	http.HandleFunc("/", getInput)
+	http.ListenAndServe(":8080", nil)
+}
+
+func getInput(w http.ResponseWriter, r *http.Request) {
 
 	tpl = template.Must(template.ParseGlob("./index.html"))
 	tpl.ExecuteTemplate(w, "index.html", nil)
@@ -85,5 +85,7 @@ func getUserName(w http.ResponseWriter, r *http.Request) {
 	var users Userinfo
 	json.Unmarshal([]byte(body), &users)
 	// fmt.Println(users)
-	fmt.Printf("Name: %s\n\nLogin: %s\n\nURL: %s\n\nBio: %s\nPublic Repositories: %d\n\nFollowers: %d\n\nFollowing: %d\n\n", users.Name, users.Login, users.Url, users.Bio, users.Public_repos, users.Followers, users.Following)
+	if users.Name != "" {
+		fmt.Printf("\nName: %s\n\nLogin: %s\n\nBio: %s\n\nPublic Repositories: %d\n\nFollowers: %d\n\nFollowing: %d\n\n", users.Name, users.Login, users.Bio, users.Public_repos, users.Followers, users.Following)
+	}
 }
