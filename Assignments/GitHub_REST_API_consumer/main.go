@@ -228,6 +228,7 @@ func getRepos() {
 	var reposArray ReposInfoArray
 	json.Unmarshal([]byte(bodyJson), &reposArray)
 	for i := 0; i < reposLoop; i++ {
-		fmt.Printf("\nRepository No %d: %v\n", i+1, reposArray[i].Name)
+		fmt.Printf("\nRepository No %d: %v", i+1, reposArray[i].Name)
+		fmt.Printf("\nAvailable at : %v\n", reposArray[i].Html_url)
 	}
 }
