@@ -36,8 +36,8 @@ type Owner struct {
 }
 
 type Licence struct {
-	key     string
-	name    string
+	Key     string
+	Name    string
 	Spdx_id string
 	Url     string
 	Node_id string
@@ -150,7 +150,7 @@ type ReposInfoJson struct {
 	License           Licence
 	Forks             int
 	Open_issues       int
-	watchers          int
+	Watchers          int
 	Default_branch    string
 }
 
