@@ -8,20 +8,44 @@ import (
 
 func main() {
 
-	var noOfSoldiers int64
-	fmt.Printf("\nEnter the number of people you want for the josephus problem: ")
+	collectInput()
 
-	fmt.Scanln(&noOfSoldiers)
-
-	josephusSimulation(noOfSoldiers)
 }
 
-func josephusSimulation(noOfSoldiers int64) int64 {
+func collectInput() string {
+	var collectStr string
+	fmt.Printf(" Enter the number of people you want for the josephus problem: ")
+	fmt.Scanln(&collectStr)
 
-	binarySoldier := strconv.FormatInt(noOfSoldiers, 2)
-	fmt.Println(binarySoldier)
+	validateInput(collectStr)
 
-	binarySoldierArray := strings.Split(binarySoldier, "")
+	return collectStr
+
+}
+
+func validateInput(collectStr string) {
+	var validInt int
+	validInt, err := strconv.Atoi(collectStr)
+	if err == nil {
+		fmt.Printf("\n %d -> Is expected Input\n", validInt)
+		josephusSimulation(validInt)
+
+	} else {
+		fmt.Printf("\n Input value should be of type [int], ERROR: %q\n", err)
+		collectInput()
+	}
+
+}
+
+func josephusSimulation(validInt int) int {
+
+	strSoldier := strconv.Itoa(validInt)
+
+	binarySoldier, _ := strconv.ParseInt(strSoldier, 10, 64)
+
+	binarySoldierStr := strconv.FormatInt(binarySoldier, 2)
+
+	binarySoldierArray := strings.Split(binarySoldierStr, "")
 
 	firstElement, _ := strconv.Atoi(binarySoldierArray[0])
 
@@ -51,5 +75,7 @@ func josephusSimulation(noOfSoldiers int64) int64 {
 	survivorFinalInt, _ := strconv.ParseInt(survivorFinal, 2, 64)
 	fmt.Printf("\n\nThe position of the last surviving person is : %d\n\n", survivorFinalInt)
 
-	return (survivorFinalInt)
+	soldierAlive := int(survivorFinalInt)
+
+	return (soldierAlive)
 }
