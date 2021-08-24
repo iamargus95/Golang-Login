@@ -14,7 +14,7 @@ func main() {
 
 func collectInput() string {
 	var collectStr string
-	fmt.Printf(" Enter the number of people you want for the josephus problem: ")
+	fmt.Printf("\n Enter the number of people you want for the josephus problem: ")
 	fmt.Scanln(&collectStr)
 
 	validateInput(collectStr)
@@ -26,13 +26,12 @@ func collectInput() string {
 func validateInput(collectStr string) {
 	var validInt int
 	validInt, err := strconv.Atoi(collectStr)
-	if err == nil {
+	if err != nil {
+		fmt.Printf("\n Input value should be of type [int],\n ERROR: %q\n", err)
+		collectInput()
+	} else {
 		fmt.Printf("\n %d -> Is expected Input\n", validInt)
 		josephusSimulation(validInt)
-
-	} else {
-		fmt.Printf("\n Input value should be of type [int], ERROR: %q\n", err)
-		collectInput()
 	}
 
 }
@@ -73,9 +72,7 @@ func josephusSimulation(validInt int) int {
 	survivorFinal := strings.Join(survivorSoldierString, "")
 
 	survivorFinalInt, _ := strconv.ParseInt(survivorFinal, 2, 64)
-	fmt.Printf("\n\nThe position of the last surviving person is : %d\n\n", survivorFinalInt)
+	fmt.Printf("\n The position of the last surviving soldier is No: %d\n\n", survivorFinalInt)
 
-	soldierAlive := int(survivorFinalInt)
-
-	return (soldierAlive)
+	return int(survivorFinalInt)
 }
