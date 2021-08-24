@@ -50,11 +50,7 @@ func josephusSimulation(validInt int) int {
 
 	mutatedBinarySoldierArray := []int{}
 	for _, i := range binarySoldierArray {
-		j, err := strconv.Atoi(i)
-		if err != nil {
-			panic(err)
-		}
-
+		j, _ := strconv.Atoi(i)
 		mutatedBinarySoldierArray = append(mutatedBinarySoldierArray, j)
 	}
 
