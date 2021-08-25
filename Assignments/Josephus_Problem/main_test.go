@@ -27,3 +27,21 @@ func TestJosephusSimulationArray(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateInput(t *testing.T) {
+	var validArray = []struct {
+		input    string
+		expected int
+	}{
+		{"1", 1},
+		{"13", 13},
+		{"43", 43},
+		{"975", 975},
+	}
+
+	for _, test := range validArray {
+		if output, err := validateInput(test.input); output != test.expected {
+			t.Error("Test failed: {} inputted, {} expected, received: {}", test.input, test.expected, err)
+		}
+	}
+}

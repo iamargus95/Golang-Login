@@ -8,7 +8,13 @@ import (
 
 func main() {
 
-	collectInput()
+	input := collectInput()
+	valid, err := validateInput(input)
+	if err != nil {
+		fmt.Printf("Invalid Input. ERROR: %q\n", err)
+	} else {
+		josephusSimulation(valid)
+	}
 
 }
 
@@ -16,23 +22,13 @@ func collectInput() string {
 	var collectStr string
 	fmt.Printf("\n Enter the number of people you want for the josephus problem: ")
 	fmt.Scanln(&collectStr)
-
-	validateInput(collectStr)
-
 	return collectStr
 
 }
 
-func validateInput(collectStr string) {
-	var validInt int
-	validInt, err := strconv.Atoi(collectStr)
-	if err != nil {
-		fmt.Printf("\n Input value should be of type [int],\n ERROR: %q\n", err)
-		collectInput()
-	} else {
-		fmt.Printf("\n %d -> Is expected Input\n", validInt)
-		josephusSimulation(validInt)
-	}
+func validateInput(collectStr string) (int, error) {
+
+	return (strconv.Atoi(collectStr))
 
 }
 
