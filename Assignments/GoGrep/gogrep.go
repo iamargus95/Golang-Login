@@ -1,4 +1,4 @@
-package GoGrep
+package gogrep
 
 import (
 	"bufio"
@@ -8,7 +8,6 @@ import (
 	"regexp"
 )
 
-// Search performs the grep search for  `pattern` in the specified `files`.
 func Search(pattern string, flags []string, files []string) []string {
 	result := []string{}
 	lineNumbers := hasFlag(flags, "-n")
@@ -65,7 +64,9 @@ func contains(values []string, x string) bool {
 	}
 	return false
 }
+
 func compileRegexp(pattern string, flags []string) (*regexp.Regexp, error) {
+
 	caseInsensitive := hasFlag(flags, "-i")
 	entireLines := hasFlag(flags, "-x")
 	if entireLines {
