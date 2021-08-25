@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetInput(t *testing.T) {
-	req, err := http.NewRequest("GET", "localhost:8080", nil)
+	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
 		t.Fatalf("Test failed, Check link again.\nERROR: %v", err)
 	}
