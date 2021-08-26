@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"text/template"
 )
 
@@ -14,6 +18,7 @@ var (
 	reposLoop    int
 )
 
+//sub-struct in ReposInfoJson
 type Owner struct {
 	Login               string
 	Id                  int
@@ -35,6 +40,7 @@ type Owner struct {
 	Site_admin          bool
 }
 
+//sub-struct in ReposInfoJson
 type Licence struct {
 	Key     string
 	Name    string
@@ -196,7 +202,25 @@ func getInput(w http.ResponseWriter, r *http.Request) {
 	reposLoop = users.Public_repos
 
 	if users.Name != "" {
-		fmt.Printf("\nName: %s\n\nLogin: %s\n\nBio: %s\n\nPublic Repositories: %d\n\nFollowers: %d\n\nFollowing: %d\n\n", users.Name, users.Login, users.Bio, users.Public_repos, users.Followers, users.Following)
+
+		userDataStr := []string{"\nName: " + users.Name + "\n\nLogin: " + users.Login + "\n\nBio: " + users.Bio + "\nPublic Repositories: " + strconv.Itoa(users.Public_repos) + "\n\nFollowers: " + strconv.Itoa(users.Followers) + "\n\nFollowing: " + strconv.Itoa(users.Following)}
+
+		file, err := os.OpenFile(formUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+		if err != nil {
+			log.Fatalf("failed creating file: %s", err)
+		}
+
+		datawriter := bufio.NewWriter(file)
+
+		for _, data := range userDataStr {
+			_, _ = datawriter.WriteString(data + "\n")
+		}
+
+		datawriter.Flush()
+		file.Close()
+
+		fmt.Printf("\nName: %s\nLogin: %s\nBio: %s\nPublic Repositories: %d\nFollowers: %d\nFollowing: %d\n", users.Name, users.Login, users.Bio, users.Public_repos, users.Followers, users.Following)
 		getRepos()
 	}
 }
@@ -227,7 +251,32 @@ func getRepos() {
 
 	var reposArray ReposInfoArray
 	json.Unmarshal([]byte(bodyJson), &reposArray)
-	for i := 0; i < reposLoop; i++ {
+
+	var loopCondition int
+	if reposLoop >= 30 {
+		loopCondition = 30
+	} else {
+		loopCondition = reposLoop
+	}
+
+	for i := 0; i < loopCondition; i++ {
+
+		repoDataStr := []string{"\nRepository No " + strconv.Itoa(i+1) + ": " + reposArray[i].Name + ". \nAvailable at : " + reposArray[i].Html_url}
+
+		file, err := os.OpenFile(formUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+		if err != nil {
+			log.Fatalf("failed creating file: %s", err)
+		}
+
+		datawriter := bufio.NewWriter(file)
+
+		for _, data := range repoDataStr {
+			_, _ = datawriter.WriteString(data + "\n")
+		}
+
+		datawriter.Flush()
+		file.Close()
 		fmt.Printf("\nRepository No %d: %v", i+1, reposArray[i].Name)
 		fmt.Printf("\nAvailable at : %v\n", reposArray[i].Html_url)
 	}
