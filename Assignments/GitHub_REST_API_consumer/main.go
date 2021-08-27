@@ -227,7 +227,7 @@ func getInput(w http.ResponseWriter, r *http.Request) {
 
 func getRepos() {
 
-	url := "http://api.github.com/users/" + formUsername + "/repos"
+	url := "http://api.github.com/users/" + formUsername + "/repos?per_page=100"
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -253,8 +253,8 @@ func getRepos() {
 	json.Unmarshal([]byte(bodyJson), &reposArray)
 
 	var loopCondition int
-	if reposLoop >= 30 {
-		loopCondition = 30
+	if reposLoop >= 100 {
+		loopCondition = 100
 	} else {
 		loopCondition = reposLoop
 	}
