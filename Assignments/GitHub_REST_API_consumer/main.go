@@ -9,13 +9,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"text/template"
-)
-
-var (
-	tpl          *template.Template
-	formUsername string
-	reposLoop    int
 )
 
 //sub-struct in ReposInfoJson
@@ -163,53 +156,52 @@ type ReposInfoJson struct {
 type ReposInfoArray []ReposInfoJson
 
 func main() {
-	fmt.Println("\nStarting listener on http://localhost:8080")
-	http.HandleFunc("/", getInput)
-	http.ListenAndServe(":8080", nil)
+	apiUsername := getUsername()
+	reposLoop := getInput(apiUsername)
+	getRepos(reposLoop, apiUsername)
 }
 
-func getInput(w http.ResponseWriter, r *http.Request) {
+func getUsername() string {
+	var username string
+	fmt.Printf("Enter the username of the github user : ")
+	fmt.Scanln(&username)
+	return username
+}
 
-	tpl = template.Must(template.ParseGlob("./index.html"))
-	tpl.ExecuteTemplate(w, "index.html", nil)
+func getInput(apiUsername string) int {
 
-	formUsername = r.FormValue("username")
-
-	url := "https://api.github.com/users/" + formUsername
+	url := "https://api.github.com/users/" + apiUsername
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
+	//Send request
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 	defer res.Body.Close()
-
+	//Read the response body.
 	bodyJson, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
 	var users Userinfo
 	json.Unmarshal([]byte(bodyJson), &users)
-	// fmt.Println(users)
-	reposLoop = users.Public_repos
 
 	if users.Name != "" {
 
-		userDataStr := []string{"\nName: " + users.Name + "\n\nLogin: " + users.Login + "\n\nBio: " + users.Bio + "\nPublic Repositories: " + strconv.Itoa(users.Public_repos) + "\n\nFollowers: " + strconv.Itoa(users.Followers) + "\n\nFollowing: " + strconv.Itoa(users.Following)}
+		userDataStr := []string{"Name               : " + users.Name + "\n\nUsername           : " + users.Login + "\n\nBio                : " + users.Bio + "\nPublic Repositories: " + strconv.Itoa(users.Public_repos) + "\n\nFollowers          : " + strconv.Itoa(users.Followers) + "\n\nFollowing          : " + strconv.Itoa(users.Following)}
 
-		file, err := os.OpenFile(formUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
+		file, err := os.OpenFile(apiUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatalf("failed creating file: %s", err)
 		}
+
+		defer file.Close()
 
 		datawriter := bufio.NewWriter(file)
 
@@ -218,16 +210,16 @@ func getInput(w http.ResponseWriter, r *http.Request) {
 		}
 
 		datawriter.Flush()
-		file.Close()
 
-		fmt.Printf("\nName: %s\nLogin: %s\nBio: %s\nPublic Repositories: %d\nFollowers: %d\nFollowing: %d\n", users.Name, users.Login, users.Bio, users.Public_repos, users.Followers, users.Following)
-		getRepos()
+	} else {
+		fmt.Println("GitHub user [" + apiUsername + "] not found!!")
 	}
+	return users.Public_repos
 }
 
-func getRepos() {
+func getRepos(reposLoop int, apiUsername string) {
 
-	url := "http://api.github.com/users/" + formUsername + "/repos?per_page=100"
+	url := "http://api.github.com/users/" + apiUsername + "/repos?per_page=100"
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -261,13 +253,13 @@ func getRepos() {
 
 	for i := 0; i < loopCondition; i++ {
 
-		repoDataStr := []string{"\nRepository No " + strconv.Itoa(i+1) + ": " + reposArray[i].Name + ". \nAvailable at : " + reposArray[i].Html_url}
+		repoDataStr := []string{"\nRepository No[" + strconv.Itoa(i+1) + "]: " + reposArray[i].Name + ". \nAvailable at    : " + reposArray[i].Html_url}
 
-		file, err := os.OpenFile(formUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
+		file, err := os.OpenFile(apiUsername+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatalf("failed creating file: %s", err)
 		}
+		defer file.Close()
 
 		datawriter := bufio.NewWriter(file)
 
@@ -276,8 +268,5 @@ func getRepos() {
 		}
 
 		datawriter.Flush()
-		file.Close()
-		fmt.Printf("\nRepository No %d: %v", i+1, reposArray[i].Name)
-		fmt.Printf("\nAvailable at : %v\n", reposArray[i].Html_url)
 	}
 }
