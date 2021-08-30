@@ -1,4 +1,4 @@
-package gogrep
+package gogrep2
 
 import (
 	"os"
@@ -118,7 +118,7 @@ func TestSearchString(t *testing.T) {
 	defer deleteFiles(files)
 
 	for _, tc := range testCases {
-		actual := searchString(tc.files[0], tc.pattern)
+		actual := SearchString(tc.files[0], tc.pattern)
 		if !reflect.DeepEqual(actual, tc.expected) {
 			t.Fatalf("FAIL: %s\nSearch for pattern %q\nexpected %v\nactual %v.",
 				tc.description, tc.pattern, tc.expected, actual)

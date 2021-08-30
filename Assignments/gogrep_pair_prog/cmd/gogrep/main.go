@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	gogrep "github.com/iamargus95/Learning-Golang/Assignments/gogrep_pair_prog/gogrep2"
 )
 
 func main() {
@@ -22,7 +24,7 @@ func main() {
 
 	flag.Parse()
 
-	pattern := PatternString()
+	pattern := gogrep.PatternString()
 	path := os.Args[2]
-	fmt.Printf(SearchString(path, pattern) + "\n")
+	fmt.Printf(gogrep.SearchString(path, pattern) + "\n")
 }

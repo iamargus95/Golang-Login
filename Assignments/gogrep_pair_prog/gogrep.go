@@ -1,4 +1,4 @@
-package gogrep
+package gogrep2
 
 import (
 	"bufio"
