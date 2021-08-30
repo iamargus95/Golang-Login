@@ -29,15 +29,15 @@ func main() {
 
 	flag.Parse()
 
-	pattern := os.Args[1]
-
-	searchString(os.Args[2], pattern)
+	pattern := patternString()
+	path := os.Args[2]
+	fmt.Printf("\n" + searchString(path, pattern) + "\n")
 }
 
 func walkPathStore() []string {
 
 	inputFiles := []string{}
-	err := filepath.Walk(os.Args[1], func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(os.Args[2], func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -52,7 +52,7 @@ func walkPathStore() []string {
 	return inputFiles
 }
 
-func searchString(path, pattern string) {
+func searchString(path, pattern string) string {
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -69,13 +69,15 @@ func searchString(path, pattern string) {
 
 	for scanner.Scan() {
 		if r.MatchString(scanner.Text()) {
-			fmt.Println(scanner.Text())
+			return (scanner.Text())
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	return (scanner.Text())
 }
 
 func patternString() string {
